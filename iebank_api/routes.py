@@ -29,6 +29,8 @@ def create_account():
     account = Account(name, currency)
     db.session.add(account)
     db.session.commit()
+    # add country to create_account
+    account.country = request.json['country']
     return format_account(account)
 
 @app.route('/accounts', methods=['GET'])
@@ -45,6 +47,8 @@ def get_account(id):
 def update_account(id):
     account = Account.query.get(id)
     account.name = request.json['name']
+    # add country to update_account
+    account.country = request.json['country']
     db.session.commit()
     return format_account(account)
 
@@ -59,6 +63,7 @@ def format_account(account):
     return {
         'id': account.id,
         'name': account.name,
+        'country': account.country, # add country to format_account
         'account_number': account.account_number,
         'balance': account.balance,
         'currency': account.currency,
