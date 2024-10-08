@@ -11,7 +11,7 @@ class Account(db.Model):
     status = db.Column(db.String(10), nullable=False, default="Active")
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     # add country to account
-    country = db.Column(db.String(3), nullable=False, default="") 
+    country = db.Column(db.String(3), nullable=False, default="ESP") 
 
     def __repr__(self):
         return '<Event %r>' % self.account_number
