@@ -16,14 +16,10 @@ env:
 
 jobs:
   build:
-    
+
     runs-on: ubuntu-latest
     env:
       ENV: ghci
-      DBUSER: ${{ secrets.DBUSER }}
-      DBPASS: ${{ secrets.DBPASS }}
-      DBHOST: ${{ secrets.DBHOST }}
-      DBNAME: ${{ secrets.DBNAME }}
 
     steps:
     - uses: actions/checkout@v4
@@ -37,7 +33,6 @@ jobs:
     - name: Install dependencies
       run: |
         pip install -r requirements.txt
-        pip install flask_migrate
     - name: Lint with flake8
       run: |
         pip install flake8 pytest
@@ -45,14 +40,18 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    - name: Test with pytest
+      run: |
+        python -m pytest --cov=iebank_api -v
     - name: Upload artifact for deployment jobs
       uses: actions/upload-artifact@v4
       with:
         name: python-app
         path: |
-          . 
+          .
 
   deploy-dev:
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     needs: build
     environment:
@@ -65,12 +64,12 @@ jobs:
       with:
         name: python-app
         path: .
-    
+
     - uses: azure/login@v2
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    - name: 'Deploy to Azure Web App'
+    - name: 'Deploy to Azure Web App Development'
       uses: azure/webapps-deploy@v3
       id: deploy-to-webapp
       with:
@@ -78,6 +77,7 @@ jobs:
         package: .
 
   deploy-uat:
+    if: github.event.pull_request.base.ref == 'main' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     needs: build
     environment:
@@ -90,12 +90,12 @@ jobs:
       with:
         name: python-app
         path: .
-    
+
     - uses: azure/login@v2
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    - name: 'Deploy to Azure Web App'
+    - name: 'Deploy to Azure Web App UAT'
       uses: azure/webapps-deploy@v3
       id: deploy-to-webapp
       with:
