@@ -19,7 +19,7 @@ jobs:
     
     runs-on: ubuntu-latest
     env:
-      ENV: dev
+      ENV: ghci
       DBUSER: ${{ secrets.DBUSER }}
       DBPASS: ${{ secrets.DBPASS }}
       DBHOST: ${{ secrets.DBHOST }}
@@ -55,7 +55,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     environment:
-      name: 'DEV'
+      name: 'Development'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
