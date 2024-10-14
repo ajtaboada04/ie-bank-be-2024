@@ -11,8 +11,8 @@ permissions:
   id-token: write
 
 env:
-  BACKEND_WEBAPP_DEV: rorosaga-be-dev
-  BACKEND_WEBAPP_UAT: rorosaga-be-uat
+  BACKEND_WEBAPP_DEV: ataboada-be-dev
+  BACKEND_WEBAPP_UAT: ataboada-be-uat
 
 jobs:
   build:
